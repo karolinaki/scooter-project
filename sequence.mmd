@@ -1,0 +1,44 @@
+sequenceDiagram
+    actor User
+
+    User -->> ScooterApp: register()
+    rect rgb(255, 77, 77)
+    critical Registration
+    option Username exists
+        ScooterApp --> ScooterApp: Already registered
+    option User<18
+        ScooterApp --> ScooterApp: too young to register
+    end
+    end
+    User -->> ScooterApp: login(password)
+    rect rgb(255, 77, 77)
+    critical Login
+    option incorrect password 
+        ScooterApp --> ScooterApp: Log Err
+    end
+    end
+    activate Scooter
+    ScooterApp -->> Scooter: rentScooter(scooter, user)
+    rect rgb(255, 77, 77)
+    critical Scooter == rented
+        ScooterApp --> ScooterApp: scooter already rented
+    end
+    end
+    Note over ScooterApp: "Scooter is rented"
+    Scooter ->> User: registered
+    Scooter -->> ScooterApp: rent()
+    rect rgb(255, 77, 77)
+    critical conditions for rental
+    option charge <20%
+    option broken == true
+        ScooterApp --> ScooterApp: Rent another
+    end 
+    end
+    deactivate Scooter
+    Scooter -->> ScooterApp: dock(@Station)
+    ScooterApp -->> User: logout()
+    Note over Scooter: recharge(setInterval)
+    Note over Scooter: requestRepair(setInterval)
+
+
+
